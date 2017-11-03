@@ -1,0 +1,45 @@
+version: "3"
+
+services:
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.3 
+    networks:
+      - elk
+    environment:
+      - xpack.security.enabled=false
+      - xpack.monitoring.enabled=false
+      - xpack.ml.enabled=false
+      - xpack.graph.enabled=false
+      - xpack.watcher.enabled=false
+    deploy:
+      replicas: 1
+
+  logstash:
+#    image: localhost:5000/mylogstash:latest
+    image: docker.elastic.co/logstash/logstash:5.6.3 
+    networks:
+      - elk
+    deploy:
+      replicas: 1
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:5.6.3
+    networks:
+      - elk
+      - proxy
+    environment:
+      - ELASTICSEARCH_URL=http://elk_elasticsearch:9200
+    deploy:
+      replicas: 1
+      labels: 
+        - com.df.notify=true
+        - com.df.distribute=true
+        - com.df.servicePath=/app,/bundles,/elasticsearch,/login,/logout,/ui,/plugins,/api
+        - com.df.port=5601
+
+networks:
+  proxy:
+    external: true
+  elk:
+    external: false

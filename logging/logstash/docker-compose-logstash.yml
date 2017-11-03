@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+
+  logstash:
+    image: localhost:5000/mylogstash:latest
+    networks:
+      - elk_elk
+#    environment:
+#      - xpack.security.enabled=false
+#      - xpack.monitoring.enabled=false
+#      - xpack.ml.enabled=false
+#      - xpack.graph.enabled=false
+    deploy:
+      replicas: 1
+
+networks:
+  elk_elk:
+    external: true

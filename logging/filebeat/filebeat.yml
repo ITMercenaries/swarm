@@ -1,0 +1,10 @@
+filebeat.prospectors:
+ - input_type: log
+   paths:
+     - /host-logs/*/*-json.log
+#   exclude_files: [".gz$"]
+   document_type: docker_log
+output.logstash:
+  hosts: ["logstash:5044"]
+#output.elasticsearch:
+#  hosts: ["elasticsearch:9200"]
