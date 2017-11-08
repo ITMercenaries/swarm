@@ -1,0 +1,46 @@
+version: "3"
+
+services:
+
+  swarm-ui:
+    container_name: swarm-ui
+    image: portainer/portainer
+    command: -H unix:///var/run/docker.sock
+    ports:
+      - 9000:9000
+#    networks:
+#      - proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      restart_policy:
+        condition: on-failure
+      labels:
+        - ca.itm.dm=Util
+        - ca.itm.description=Cluster Web UI
+      placement:
+        constraints: 
+          - node.labels.usage==util
+
+  registry:
+    container_name: registry
+    image: registry:2.6.2
+    ports:
+      - 5000:5000
+    volumes:
+      - /app/registry:/var/lib/registry
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+      labels:
+        - ca.itm.dm=Util
+        - ca.itm.description=Private Registry
+      placement:
+        constraints:
+          - node.labels.usage==util
+
+
+networks:
+  proxy:
+    external: true

@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+
+  monitor-ui:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /app/portainer:/data
+    deploy:
+      restart_policy:
+        condition: on-failure
+      labels:
+        - ca.itm.dm=Util
+        - ca.itm.description=Cluster Web UI
+      placement:
+        constraints: 
+          - node.labels.usage==util
+#
+  monitor-metrics:
+    image: prometheus/prometheus
+    ports:
+      - 9000:9000
+    volumes:

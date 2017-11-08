@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+
+  grafana:
+    image: grafana/grafana:4.5.2
+    ports:
+      - 3000:3000
+    networks:
+      - proxy
+#    environment:
+#      - GF_SERVER_ROOT_URL=http://www.jiameng.com:3000/
+#      - GF_SECURITY_ADMIN_PASSWORD=password
+    deploy:
+      restart_policy:
+        condition: on-failure
+      labels:
+        - ca.itm.dm=Monitor
+        - ca.itm.description=Monitoring Dashboards
+      placement:
+        constraints: 
+          - node.labels.usage==monitor
+
+networks:
+  proxy:
+    external: true
+
